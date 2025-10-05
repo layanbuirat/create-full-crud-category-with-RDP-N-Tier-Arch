@@ -57,6 +57,11 @@ dotnet ef database update
 Run the application:
 
 dotnet run
+<img width="959" height="348" alt="image" src="https://github.com/user-attachments/assets/7c207bb6-8a59-4275-94c5-30d5065223c7" />
+<img width="536" height="424" alt="image" src="https://github.com/user-attachments/assets/39c53e21-b82b-4499-a88a-19a784938380" />
+<img width="539" height="334" alt="image" src="https://github.com/user-attachments/assets/8fd9f710-731b-41f7-af9b-cae8223884ea" />
+<img width="482" height="332" alt="image" src="https://github.com/user-attachments/assets/3c57e7f7-813b-4025-a541-06af67d6bcb3" />
+
 
 👨‍💻 Author
 Eng.Leyan Buirat 
