@@ -1,0 +1,217 @@
+@model KASHOP.Models.Product
+
+@{
+    ViewData["Title"] = "Create Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Create New Product</h1>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Product Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" id="createForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Name" class="form-label fw-bold"></label>
+                                    <input asp-for="Name" class="form-control" placeholder="Enter product name" />
+                                    <span asp-validation-for="Name" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="SKU" class="form-label fw-bold">SKU (Stock Keeping Unit)</label>
+                                    <input asp-for="SKU" class="form-control" placeholder="e.g., PROD-001" />
+                                    <span asp-validation-for="SKU" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="form-label fw-bold"></label>
+                            <textarea asp-for="Description" class="form-control" rows="4" 
+                                      placeholder="Enter product description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger small"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="Price" class="form-label fw-bold"></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="Price" class="form-control" type="number" step="0.01" min="0.01" 
+                                               placeholder="0.00" />
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="DiscountPrice" class="form-label fw-bold">Discount Price (Optional)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input asp-for="DiscountPrice" class="form-control" type="number" step="0.01" min="0" 
+                                               placeholder="0.00" />
+                                    </div>
+                                    <span asp-validation-for="DiscountPrice" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group mb-3">
+                                    <label asp-for="StockQuantity" class="form-label fw-bold">Stock Quantity</label>
+                                    <input asp-for="StockQuantity" class="form-control" type="number" min="0" 
+                                           placeholder="0" />
+                                    <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="ImageUrl" class="form-label fw-bold">Product Image URL</label>
+                            <input asp-for="ImageUrl" class="form-control" 
+                                   placeholder="https://example.com/product-image.jpg" />
+                            <span asp-validation-for="ImageUrl" class="text-danger small"></span>
+                            <div class="form-text">Enter a direct link to the product image</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="CategoryId" class="form-label fw-bold">Category</label>
+                                    <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryId">
+                                        <option value="">-- Select Category --</option>
+                                    </select>
+                                    <span asp-validation-for="CategoryId" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label asp-for="BrandId" class="form-label fw-bold">Brand</label>
+                                    <select asp-for="BrandId" class="form-select" asp-items="ViewBag.BrandId">
+                                        <option value="">-- Select Brand --</option>
+                                    </select>
+                                    <span asp-validation-for="BrandId" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                                    <label class="form-check-label fw-bold" asp-for="IsActive">Active Product</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" asp-for="IsFeatured">
+                                    <label class="form-check-label fw-bold" asp-for="IsFeatured">Featured Product</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-save"></i> Create Product
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Image Preview</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div id="imagePreview" class="mb-3" style="display: none;">
+                        <img id="previewImage" src="" alt="Product Preview" 
+                             style="max-width: 100%; max-height: 300px; object-fit: contain;" 
+                             class="img-thumbnail" />
+                        <div class="mt-2">
+                            <small class="text-muted" id="imageUrlText"></small>
+                        </div>
+                    </div>
+                    <div id="noPreview" class="text-muted py-4">
+                        <i class="fas fa-image fa-4x mb-3"></i>
+                        <p>Product image preview will appear here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Quick Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled small">
+                        <li class="mb-2">✓ Use clear, high-quality product images</li>
+                        <li class="mb-2">✓ Set competitive pricing</li>
+                        <li class="mb-2">✓ Feature popular products</li>
+                        <li class="mb-2">✓ Keep stock levels updated</li>
+                        <li class="mb-2">✓ Write detailed descriptions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('ImageUrl').addEventListener('input', function() {
+            const preview = document.getElementById('imagePreview');
+            const noPreview = document.getElementById('noPreview');
+            const previewImage = document.getElementById('previewImage');
+            const imageUrlText = document.getElementById('imageUrlText');
+            
+            if (this.value) {
+                previewImage.src = this.value;
+                imageUrlText.textContent = this.value;
+                preview.style.display = 'block';
+                noPreview.style.display = 'none';
+            } else {
+                preview.style.display = 'none';
+                noPreview.style.display = 'block';
+            }
+        });
+
+        // Form validation
+        document.getElementById('createForm').addEventListener('submit', function(e) {
+            const price = parseFloat(document.getElementById('Price').value);
+            const discountPrice = document.getElementById('DiscountPrice').value ? 
+                                parseFloat(document.getElementById('DiscountPrice').value) : null;
+            
+            if (discountPrice && discountPrice >= price) {
+                e.preventDefault();
+                alert('Discount price must be less than regular price!');
+                document.getElementById('DiscountPrice').focus();
+            }
+        });
+    </script>
+    
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,153 @@
+@model KASHOP.Models.Product
+
+@{
+    ViewData["Title"] = "Delete Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Delete Product
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-exclamation-circle"></i> Warning!
+                        </h5>
+                        <p class="mb-0">
+                            You are about to permanently delete this product. This action cannot be undone!
+                        </p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" alt="@Model.Name" 
+                                     class="img-fluid rounded shadow mb-3" 
+                                     style="max-height: 200px; object-fit: contain;" />
+                            }
+                            else
+                            {
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center mb-3" 
+                                     style="height: 150px;">
+                                    <i class="fas fa-image fa-2x text-muted"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="text-danger">Product Details</h5>
+                            <dl class="row">
+                                <dt class="col-sm-3">Name:</dt>
+                                <dd class="col-sm-9">@Model.Name</dd>
+
+                                <dt class="col-sm-3">SKU:</dt>
+                                <dd class="col-sm-9">@Model.SKU</dd>
+
+                                <dt class="col-sm-3">Price:</dt>
+                                <dd class="col-sm-9">$@Model.Price.ToString("F2")</dd>
+
+                                <dt class="col-sm-3">Stock:</dt>
+                                <dd class="col-sm-9">@Model.StockQuantity units</dd>
+
+                                <dt class="col-sm-3">Category:</dt>
+                                <dd class="col-sm-9">@Model.Category.Name</dd>
+
+                                <dt class="col-sm-3">Brand:</dt>
+                                <dd class="col-sm-9">@Model.Brand.Name</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="card bg-light mt-3">
+                        <div class="card-body">
+                            <h6 class="card-title text-danger">
+                                <i class="fas fa-info-circle"></i> Important Information
+                            </h6>
+                            <ul class="mb-0">
+                                <li>This action is permanent and cannot be reversed</li>
+                                <li>All product data will be permanently removed from the system</li>
+                                <li>This product will no longer be available for customers</li>
+                                <li>Any orders containing this product will still show it in order history</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" class="mt-4">
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div class="form-group mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                                <label class="form-check-label text-danger fw-bold" for="confirmDelete">
+                                    I understand that this action cannot be undone and I confirm that I want to delete this product.
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-danger btn-lg" id="deleteButton" disabled>
+                                <i class="fas fa-trash"></i> Confirm Delete
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info btn-lg">
+                                <i class="fas fa-arrow-left"></i> Back to Details
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Alternative Actions</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-3">
+                        Instead of deleting, consider these alternatives:
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning">
+                            <i class="fas fa-edit"></i> Edit Product Instead
+                        </a>
+                        <button class="btn btn-outline-secondary" onclick="deactivateProduct()">
+                            <i class="fas fa-ban"></i> Deactivate Instead of Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Enable delete button only when checkbox is checked
+        document.getElementById('confirmDelete').addEventListener('change', function() {
+            document.getElementById('deleteButton').disabled = !this.checked;
+        });
+
+        // Deactivate product instead of deleting
+        function deactivateProduct() {
+            if (confirm('Are you sure you want to deactivate this product instead? It will be hidden from customers but not deleted.')) {
+                // Here you would typically make an API call to deactivate the product
+                // For now, redirect to edit page
+                window.location.href = '@Url.Action("Edit", new { id = Model.Id })';
+            }
+        }
+
+        // Confirm before submitting form
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!confirm('FINAL WARNING: This will permanently delete the product. Are you absolutely sure?')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+}

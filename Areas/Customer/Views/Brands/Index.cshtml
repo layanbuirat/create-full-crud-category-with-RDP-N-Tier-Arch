@@ -1,0 +1,81 @@
+@model IEnumerable<KASHOP.Models.Brand>
+
+@{
+    ViewData["Title"] = "Our Brands";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Our Brands</h1>
+        <p class="lead">Discover products from our trusted brands</p>
+    </div>
+
+    <div class="row">
+        @foreach (var brand in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card brand-card h-100">
+                    <div class="card-body text-center">
+                        @if (!string.IsNullOrEmpty(brand.LogoUrl))
+                        {
+                            <img src="@brand.LogoUrl" alt="@brand.Name" 
+                                 class="brand-logo mb-3" 
+                                 style="width: 120px; height: 120px; object-fit: contain;" />
+                        }
+                        else
+                        {
+                            <div class="brand-placeholder mb-3">
+                                <i class="fas fa-building fa-3x text-muted"></i>
+                            </div>
+                        }
+                        
+                        <h5 class="card-title">@brand.Name</h5>
+                        <p class="card-text text-muted">@brand.Description</p>
+                        <p class="text-muted small">
+                            <i class="fas fa-box"></i> @brand.Products.Count products available
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="d-grid gap-2">
+                            <a href="@Url.Action("Details", new { id = brand.Id })" 
+                               class="btn btn-outline-primary">View Brand</a>
+                            <a href="@Url.Action("Products", new { id = brand.Id })" 
+                               class="btn btn-primary">View Products</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-building fa-4x text-muted mb-3"></i>
+            <h3>No Brands Available</h3>
+            <p class="text-muted">Check back later for our brand offerings.</p>
+        </div>
+    }
+</div>
+
+<style>
+    .brand-card {
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .brand-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    
+    .brand-logo {
+        transition: transform 0.2s;
+    }
+    
+    .brand-card:hover .brand-logo {
+        transform: scale(1.1);
+    }
+</style>

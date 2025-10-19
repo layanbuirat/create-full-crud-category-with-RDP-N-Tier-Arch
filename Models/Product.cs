@@ -21,7 +21,19 @@ namespace KASHOP.Models
         
         public string ImageUrl { get; set; } = string.Empty;
         
+        // العلاقات
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
+        
+        public int? BrandId { get; set; }
+        public Brand? Brand { get; set; }
+        
+        public string SKU { get; set; } = string.Empty;
+        public bool IsFeatured { get; set; }
+        public bool IsActive { get; set; } = true;
+        public decimal? DiscountPrice { get; set; }
+        
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? UpdatedAt { get; set; }
     }
 }

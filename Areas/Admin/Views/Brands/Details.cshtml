@@ -1,0 +1,72 @@
+@model KASHOP.Models.Brand
+
+@{
+    ViewData["Title"] = "Brand Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4>Brand Details</h4>
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Logo</dt>
+                        <dd class="col-sm-9">
+                            @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                            {
+                                <img src="@Model.LogoUrl" alt="@Model.Name" 
+                                     style="width: 100px; height: 100px; object-fit: contain;" 
+                                     class="img-thumbnail" />
+                            }
+                            else
+                            {
+                                <span class="text-muted">No logo</span>
+                            }
+                        </dd>
+                        
+                        <dt class="col-sm-3">Name</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+                        
+                        <dt class="col-sm-3">Description</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+                        
+                        <dt class="col-sm-3">Website</dt>
+                        <dd class="col-sm-9">
+                            @if (!string.IsNullOrEmpty(Model.Website))
+                            {
+                                <a href="@Model.Website" target="_blank">@Model.Website</a>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No website</span>
+                            }
+                        </dd>
+                        
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactive</span>
+                            }
+                        </dd>
+                        
+                        <dt class="col-sm-3">Created</dt>
+                        <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedAt)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

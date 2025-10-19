@@ -1,0 +1,98 @@
+@model KASHOP.Models.Brand
+
+@{
+    ViewData["Title"] = "Create Brand";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Create New Brand</h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" enctype="multipart/form-data">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="LogoUrl" class="control-label">Logo URL</label>
+                            <input asp-for="LogoUrl" class="form-control" placeholder="https://example.com/logo.png" />
+                            <span asp-validation-for="LogoUrl" class="text-danger"></span>
+                            <small class="form-text text-muted">Enter the URL of the brand's logo image</small>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label asp-for="Website" class="control-label"></label>
+                            <input asp-for="Website" class="form-control" placeholder="https://example.com" />
+                            <span asp-validation-for="Website" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group form-check mb-3">
+                            <input class="form-check-input" asp-for="IsActive" checked />
+                            <label class="form-check-label" asp-for="IsActive"></label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Brand Logo Preview</h5>
+                </div>
+                <div class="card-body text-center">
+                    <div id="logoPreview" class="mb-3" style="display: none;">
+                        <img id="previewImage" src="" alt="Logo Preview" 
+                             style="max-width: 200px; max-height: 200px; object-fit: contain;" 
+                             class="img-thumbnail" />
+                    </div>
+                    <div id="noPreview" class="text-muted">
+                        <i class="fas fa-image fa-3x mb-2"></i>
+                        <p>Logo preview will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('LogoUrl').addEventListener('input', function() {
+            const preview = document.getElementById('logoPreview');
+            const noPreview = document.getElementById('noPreview');
+            const previewImage = document.getElementById('previewImage');
+            
+            if (this.value) {
+                previewImage.src = this.value;
+                preview.style.display = 'block';
+                noPreview.style.display = 'none';
+            } else {
+                preview.style.display = 'none';
+                noPreview.style.display = 'block';
+            }
+        });
+    </script>
+    
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

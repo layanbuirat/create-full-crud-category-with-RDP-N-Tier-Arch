@@ -1,0 +1,234 @@
+@model KASHOP.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Product Details</h1>
+                <div>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Product Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" alt="@Model.Name" 
+                                     class="img-fluid rounded shadow" 
+                                     style="max-height: 300px; object-fit: contain;" />
+                            }
+                            else
+                            {
+                                <div class="bg-light rounded d-flex align-items-center justify-content-center" 
+                                     style="height: 200px;">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <h2 class="text-primary">@Model.Name</h2>
+                            <p class="text-muted lead">@Model.Description</p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-sm-6">
+                                    <h5 class="text-success">
+                                        @if (Model.DiscountPrice.HasValue && Model.DiscountPrice < Model.Price)
+                                        {
+                                            <span class="text-danger">$@Model.DiscountPrice.Value.ToString("F2")</span>
+                                            <small class="text-muted text-decoration-line-through ms-2">
+                                                $@Model.Price.ToString("F2")
+                                            </small>
+                                        }
+                                        else
+                                        {
+                                            <span>$@Model.Price.ToString("F2")</span>
+                                        }
+                                    </h5>
+                                    <small class="text-muted">Price</small>
+                                </div>
+                                <div class="col-sm-6">
+                                    <h5>
+                                        @if (Model.StockQuantity > 10)
+                                        {
+                                            <span class="text-success">@Model.StockQuantity in stock</span>
+                                        }
+                                        else if (Model.StockQuantity > 0)
+                                        {
+                                            <span class="text-warning">@Model.StockQuantity in stock</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">Out of stock</span>
+                                        }
+                                    </h5>
+                                    <small class="text-muted">Stock Quantity</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">SKU:</dt>
+                                <dd class="col-sm-8">@Model.SKU</dd>
+
+                                <dt class="col-sm-4">Category:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-info">@Model.Category.Name</span>
+                                </dd>
+
+                                <dt class="col-sm-4">Brand:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge bg-secondary">@Model.Brand.Name</span>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Status:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsActive)
+                                    {
+                                        <span class="badge bg-success">Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Inactive</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">Featured:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.IsFeatured)
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-star"></i> Featured
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Regular</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">Created:</dt>
+                                <dd class="col-sm-8">
+                                    <small class="text-muted">@Model.CreatedAt.ToString("f")</small>
+                                </dd>
+
+                                @if (Model.UpdatedAt.HasValue)
+                                {
+                                    <dt class="col-sm-4">Last Updated:</dt>
+                                    <dd class="col-sm-8">
+                                        <small class="text-muted">@Model.UpdatedAt.Value.ToString("f")</small>
+                                    </dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <div class="mt-3">
+                            <dt>Image URL:</dt>
+                            <dd>
+                                <a href="@Model.ImageUrl" target="_blank" class="text-break">
+                                    @Model.ImageUrl
+                                </a>
+                            </dd>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Product
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Delete Product
+                        </a>
+                        <a href="@Url.Action("Products", "Brands", new { area = "Customer", id = Model.BrandId })" 
+                           class="btn btn-info" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> View on Site
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Product Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="mb-3">
+                            <h3 class="text-primary">@Model.StockQuantity</h3>
+                            <small class="text-muted">Units in Stock</small>
+                        </div>
+                        <div class="mb-3">
+                            <h3 class="text-success">$@Model.Price.ToString("F2")</h3>
+                            <small class="text-muted">Regular Price</small>
+                        </div>
+                        @if (Model.DiscountPrice.HasValue)
+                        {
+                            <div class="mb-3">
+                                <h3 class="text-danger">$@Model.DiscountPrice.Value.ToString("F2")</h3>
+                                <small class="text-muted">Discount Price</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Related Information</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Category:</h6>
+                    <p class="mb-3">
+                        <span class="badge bg-info">@Model.Category.Name</span><br />
+                        <small class="text-muted">@Model.Category.Description</small>
+                    </p>
+
+                    <h6>Brand:</h6>
+                    <p class="mb-0">
+                        <span class="badge bg-secondary">@Model.Brand.Name</span><br />
+                        <small class="text-muted">@Model.Brand.Description</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

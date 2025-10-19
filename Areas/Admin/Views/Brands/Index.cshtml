@@ -1,0 +1,103 @@
+@model IEnumerable<KASHOP.Models.Brand>
+
+@{
+    ViewData["Title"] = "Brands Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Brands Management</h1>
+        <a asp-action="Create" class="btn btn-primary">Create New Brand</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Logo</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.LogoUrl))
+                                {
+                                    <img src="@item.LogoUrl" alt="@item.Name" style="width: 50px; height: 50px; object-fit: cover;" class="rounded" />
+                                }
+                                else
+                                {
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Inactive</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                                    <button class="btn btn-secondary btn-sm" onclick="toggleStatus(@item.Id, this)">
+                                        @(item.IsActive ? "Deactivate" : "Activate")
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function toggleStatus(brandId, button) {
+            try {
+                const response = await fetch(`/Admin/Brands/ToggleStatus?id=${brandId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const row = button.closest('tr');
+                    const statusBadge = row.querySelector('.badge');
+                    
+                    if (result.isActive) {
+                        statusBadge.className = 'badge bg-success';
+                        statusBadge.textContent = 'Active';
+                        button.textContent = 'Deactivate';
+                    } else {
+                        statusBadge.className = 'badge bg-danger';
+                        statusBadge.textContent = 'Inactive';
+                        button.textContent = 'Activate';
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling status:', error);
+            }
+        }
+    </script>
+}

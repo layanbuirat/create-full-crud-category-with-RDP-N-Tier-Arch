@@ -1,0 +1,213 @@
+@model IEnumerable<KASHOP.Models.Product>
+
+@{
+    ViewData["Title"] = "Products Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Products Management</h1>
+        <a asp-action="Create" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Create New Product
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">All Products</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>SKU</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Category</th>
+                                <th>Brand</th>
+                                <th>Featured</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" alt="@item.Name" 
+                                                 style="width: 60px; height: 60px; object-fit: cover;" 
+                                                 class="rounded border" />
+                                        }
+                                        else
+                                        {
+                                            <div class="bg-light rounded d-flex align-items-center justify-content-center border" 
+                                                 style="width: 60px; height: 60px;">
+                                                <i class="fas fa-image text-muted"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td>
+                                        <strong>@Html.DisplayFor(modelItem => item.Name)</strong>
+                                        <br />
+                                        <small class="text-muted">@Html.DisplayFor(modelItem => item.Description)</small>
+                                    </td>
+                                    <td>@Html.DisplayFor(modelItem => item.SKU)</td>
+                                    <td>
+                                        @if (item.DiscountPrice.HasValue && item.DiscountPrice < item.Price)
+                                        {
+                                            <div>
+                                                <span class="text-danger"><strong>$@item.DiscountPrice.Value.ToString("F2")</strong></span>
+                                                <br />
+                                                <small class="text-muted text-decoration-line-through">$@item.Price.ToString("F2")</small>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <strong>$@item.Price.ToString("F2")</strong>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.StockQuantity > 10)
+                                        {
+                                            <span class="badge bg-success">@item.StockQuantity</span>
+                                        }
+                                        else if (item.StockQuantity > 0)
+                                        {
+                                            <span class="badge bg-warning">@item.StockQuantity</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Out of Stock</span>
+                                        }
+                                    </td>
+                                    <td>@Html.DisplayFor(modelItem => item.Category.Name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Brand.Name)</td>
+                                    <td>
+                                        @if (item.IsFeatured)
+                                        {
+                                            <span class="badge bg-warning">
+                                                <i class="fas fa-star"></i> Featured
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-secondary">Regular</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (item.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group-vertical" role="group">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" 
+                                               class="btn btn-warning btn-sm mb-1">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a asp-action="Details" asp-route-id="@item.Id" 
+                                               class="btn btn-info btn-sm mb-1">
+                                                <i class="fas fa-eye"></i> Details
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" 
+                                               class="btn btn-danger btn-sm mb-1">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                            <button class="btn btn-secondary btn-sm" 
+                                                    onclick="toggleFeatured(@item.Id, this)">
+                                               @if (item.IsFeatured)
+                                                  {
+                                                     <text><i class="fas fa-star"></i> Unfeature</text>
+                                                  }
+                                                else
+                                                   {
+                                                       <text><i class="far fa-star"></i> Feature</text>
+                                                   }
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-box-open fa-4x text-muted mb-3"></i>
+                    <h4>No Products Found</h4>
+                    <p class="text-muted">Get started by creating your first product.</p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create First Product
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        async function toggleFeatured(productId, button) {
+            try {
+                const response = await fetch(`/Admin/Products/ToggleFeatured/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    const icon = button.querySelector('i');
+                    
+                    if (result.isFeatured) {
+                        button.innerHTML = '<i class="fas fa-star"></i> Unfeature';
+                        button.classList.remove('btn-secondary');
+                        button.classList.add('btn-warning');
+                    } else {
+                        button.innerHTML = '<i class="far fa-star"></i> Feature';
+                        button.classList.remove('btn-warning');
+                        button.classList.add('btn-secondary');
+                    }
+                    
+                    // Show success message
+                    showAlert('Product featured status updated successfully!', 'success');
+                }
+            } catch (error) {
+                console.error('Error toggling featured status:', error);
+                showAlert('Error updating featured status!', 'danger');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            document.querySelector('.card-body').prepend(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+    </script>
+}
